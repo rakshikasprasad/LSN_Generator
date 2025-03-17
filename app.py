@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, jsonify
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
@@ -14,48 +14,48 @@ pdfmetrics.registerFont(TTFont("NotoSans", "NotoSans-Regular.ttf"))
 # Clean and structure the extracted text into a dictionary
 
 samputeekarana_map = {
-    "Balancing of Spirituality and Mundane life": "aṣṭāmi candra vibhāṛāja daḷjikasthala śobhitā (5-1)",
-    "For Attractive speech": "karpūrāvāṭi kāmoda samākarṣa digdantarā (10-2)",
-    "For Good musical voice": "nijasallāpa mādhurya vinirbhart-sīta kacchapī (11-2)",
-    "For girls getting marriage": "kāmeśabaddha māṅgalyā sūtrāśobhita kantharā (12-1)",
-    "Winning husband's love with your feminine character": "kāmeśvara premaratna maṇi pratipānasthitī (14-1)",
-    "Reducing Knee pain": "māṇikya-mukuṭākāra-jānudvaya-virājitā (17-2)",
-    "Reducing Pain in calf muscle": "indragopa parikṣipta smara tūnābha jaṅghikā (18-1)",
-    "For graceful walk and internal beauty": "marālī mandagamana, mahāla vāṇya śevadhih (20-2)",
-    "For inner and external beauty": "sarvāruṇa navadyāyī sarvābharaṇa bhūṣitā (21-1)",
-    "For fulfilment of reasonable desires": "cintāmaṇi gṛhāntasthā, pañcabraḥmāsanasthitā (22-1)",
-    "Chakra awakening": "mahāpadmāṭavī saṃsthā, kadamba vanavāsinī (23-4)",
-    "Removal of inner enemies": "devarṣi gaṇasaṅghāta stuyamānātmana vaibhavā (24-1)",
-    "For live energy": "bhāṇḍaputra vadhodyukta balavikrama nanditā (29-4)",
-    "For effective planning": "geyayacara rathārūḍhā mantriṇī parisevitā (26-2)",
-    "For tackling impotency and depression": "viśukra prāṇa-haraṇā vārāhī vīryananditā (30-1)",
-    "For conceiving children": "kāmeśvara mukhāloka kalpita śrī gaṇeśvarā (30-2)",
-    "Removal of black magic": "brahmopendra mahendrādi devasamsatuta vaibhavā (33-2)",
-    "For auspicious fame": "rājarājārcitā, rāmā, ramyā, rājīvallabā (111-1)",
-    "Removal of negative energy in and out": "duṣṭagrahā, dūracāra śamanī, doṣavārjitā (51-1)",
-    "For all-round auspiciousness": "sarvāsaṅga-parityāginī, sarvānanda pradayinī (62-1)",
-    "For Job and business": "maheśvarī, mahādevī, mahālakṣmī, mahāprajñā (63-2)",
-    "For oneness with world": "rākṣasārī, rakṣasa-ghnī, rāmā, rāmālaṅkṛtā (72-2)",
-    "For detachment": "saṃśārāpāṅka nirmagnā samuddharaṇa paṇḍitā (164-1)",
-    "For inner peace": "svātmānandalavibhūta brahmādyānanda santatiḥ (80-2)",
-    "For removal of frigidity in women": "śṛṅgāra rasasaṃpūrṇā, jayā, jālandharasthitā (82-2)",
-    "For Gynic problem": "nityaklinna, nirupamā, nirvāṇa sukhadāyinī (87-1)",
-    "Communication and managerial skills": "śivadūtī, śivārādhyā, śivamūrti, śivakarī (88-2)",
-    "Good thoughts and enjoying peace": "śāntiḥ, śvastimati, kānti, mandinī, vighnanāśinī (94-2)",
-    "For Skin decease": "pāyasānna priya tvaṣṭhaka pasuloka bhayankare (95-1)",
-    "For Blood deceases": "daṃṣṭrojvalā, kṣamālādhāradhā, rudhira saṃsthita (97-1)",
-    "For muscular problems": "raktavarnā, māṃsaṅgāsthita, guṇadna pṛthamaṅgāśa (98-1)",
-    "For intellectual ability or handling autism": "medonishṭhā, madhupṛitā, bandinyādhi samanvitā (103-1)",
-    "For removing back pain": "mūlādhārām bujārūḍhā pañca-vaktrā’sthi-saṃsthita (106-1)",
-    "For bone marrow problems": "majjāsaṃsthā, haṃsāvātī mukhyasakti samanvitā (108-1)",
-    "For sperm count": "sarvāyudhadhārā, śukla saṃsthita, sarvātmikā (109-1)",
-    "Food allergy": "sarvadāna pṛticattā, yākyinymabā sarvāpini (110-1)",
-    "Self-analysis": "vimarśarūpiṇī, vidyā, vijayād jagatprasūḥ (112-1)",
-    "For Contentment": "nityatṛptā, bhaktānidhi, nityanītī, nikhilesvarī (115-1)",
-    "Removal of depression": "hṛdayasthā, raviprakhyā, trikoṇātara dīpikā (127-2)",
-    "Focus in meditation": "dhyānagamyā, aparicchedyā, nirādhā, nānāvigarāhā (127-2)",
-    "For achieving internal independency by coming out of external dependency": "sarvopādhi vinirmuktā, sadāśiva pativratā (138-1)",
-    "Terminal illness": "prāṇeśvarī, prāṇadātrī, pañcaśat-pīṭharūpiṇī (156-1)"
+    "Balancing of Spirituality and Mundane life": "aṣṭāmi candra vibhāṛāja daḷjikasthala śobhitā",
+    "For Attractive speech": "karpūrāvāṭi kāmoda samākarṣa digdantarā",
+    "For Good musical voice": "nijasallāpa mādhurya vinirbhart-sīta kacchapī",
+    "For girls getting marriage": "kāmeśabaddha māṅgalyā sūtrāśobhita kantharā",
+    "Winning husband's love with your feminine character": "kāmeśvara premaratna maṇi pratipānasthitī",
+    "Reducing Knee pain": "māṇikya-mukuṭākāra-jānudvaya-virājitā",
+    "Reducing Pain in calf muscle": "indragopa parikṣipta smara tūnābha jaṅghikā",
+    "For graceful walk and internal beauty": "marālī mandagamana, mahāla vāṇya śevadhih",
+    "For inner and external beauty": "sarvāruṇa navadyāyī sarvābharaṇa bhūṣitā",
+    "For fulfilment of reasonable desires": "cintāmaṇi gṛhāntasthā, pañcabraḥmāsanasthitā",
+    "Chakra awakening": "mahāpadmāṭavī saṃsthā, kadamba vanavāsinī",
+    "Removal of inner enemies": "devarṣi gaṇasaṅghāta stuyamānātmana vaibhavā",
+    "For live energy": "bhāṇḍaputra vadhodyukta balavikrama nanditā",
+    "For effective planning": "geyayacara rathārūḍhā mantriṇī parisevitā",
+    "For tackling impotency and depression": "viśukra prāṇa-haraṇā vārāhī vīryananditā",
+    "For conceiving children": "kāmeśvara mukhāloka kalpita śrī gaṇeśvarā",
+    "Removal of black magic": "brahmopendra mahendrādi devasamsatuta vaibhavā",
+    "For auspicious fame": "rājarājārcitā, rāmā, ramyā, rājīvallabā",
+    "Removal of negative energy in and out": "duṣṭagrahā, dūracāra śamanī, doṣavārjitā",
+    "For all-round auspiciousness": "sarvāsaṅga-parityāginī, sarvānanda pradayinī",
+    "For Job and business": "maheśvarī, mahādevī, mahālakṣmī, mahāprajñā",
+    "For oneness with world": "rākṣasārī, rakṣasa-ghnī, rāmā, rāmālaṅkṛtā",
+    "For detachment": "saṃśārāpāṅka nirmagnā samuddharaṇa paṇḍitā",
+    "For inner peace": "svātmānandalavibhūta brahmādyānanda santatiḥ",
+    "For removal of frigidity in women": "śṛṅgāra rasasaṃpūrṇā, jayā, jālandharasthitā",
+    "For Gynic problem": "nityaklinna, nirupamā, nirvāṇa sukhadāyinī",
+    "Communication and managerial skills": "śivadūtī, śivārādhyā, śivamūrti, śivakarī",
+    "Good thoughts and enjoying peace": "śāntiḥ, śvastimati, kānti, mandinī, vighnanāśinī",
+    "For Skin disease": "pāyasānna priya tvaṣṭhaka pasuloka bhayankare",
+    "For Blood diseases": "daṃṣṭrojvalā, kṣamālādhāradhā, rudhira saṃsthita",
+    "For muscular problems": "raktavarnā, māṃsaṅgāsthita, guṇadna pṛthamaṅgāśa",
+    "For intellectual ability or handling autism": "medonishṭhā, madhupṛitā, bandinyādhi samanvitā",
+    "For removing back pain": "mūlādhārām bujārūḍhā pañca-vaktrā’sthi-saṃsthita",
+    "For bone marrow problems": "majjāsaṃsthā, haṃsāvātī mukhyasakti samanvitā",
+    "For sperm count": "sarvāyudhadhārā, śukla saṃsthita, sarvātmikā",
+    "Food allergy": "sarvadāna pṛticattā, yākyinymabā sarvāpini",
+    "Self-analysis": "vimarśarūpiṇī, vidyā, vijayād jagatprasūḥ",
+    "For Contentment": "nityatṛptā, bhaktānidhi, nityanītī, nikhilesvarī",
+    "Removal of depression": "hṛdayasthā, raviprakhyā, trikoṇātara dīpikā",
+    "Focus in meditation": "dhyānagamyā, aparicchedyā, nirādhā, nānāvigarāhā",
+    "For achieving internal independence by coming out of external dependency": "sarvopādhi vinirmuktā, sadāśiva pativratā",
+    "Terminal illness": "prāṇeśvarī, prāṇadātrī, pañcaśat-pīṭharūpiṇī"
 }
 def load_lalitha_sahasranama():
     with open("lalitha_sahasranama.txt", "r", encoding="utf-8") as file:
@@ -76,12 +76,27 @@ def index():
 
     return render_template("index.html", aspects=samputeekarana_map.keys())
 
+@app.route("/get-mantra", methods=["POST"])
+def get_mantra():
+    """Fetch the Samputeekarana mantra dynamically."""
+    try:
+        data = request.get_json()  # Get JSON data
+        selected_aspect = data.get("aspect")  # Extract 'aspect' from request
+
+        if not selected_aspect:
+            return jsonify({"mantra": "Aspect not provided"}), 400
+
+        mantra = samputeekarana_map.get(selected_aspect, "Mantra not found")
+        return jsonify({"mantra": mantra})
+    except Exception as e:
+        return jsonify({"mantra": "Error processing request", "error": str(e)}), 500
+
 def generate_pdf(selected_aspect, samputeekarana):
     """
     Generate a PDF named after the selected aspect.
     """
     # Create a safe filename from the selected aspect
-    safe_filename = re.sub(r"[^a-zA-Z0-9\s]", "", selected_aspect).replace(" ", "_") + ".pdf"
+    safe_filename = "Samputeekarana_LSN_" + re.sub(r"[^a-zA-Z0-9\s]", "", selected_aspect).replace(" ", "_") + ".pdf"
 
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer)
