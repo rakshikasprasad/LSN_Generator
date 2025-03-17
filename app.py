@@ -109,14 +109,11 @@ def generate_pdf(selected_aspect, samputeekarana):
         pdf.setFont("Helvetica-Bold", 14)
         pdf.drawCentredString(width / 2, height - 30, "Sree Matre Namaha")
         pdf.setFont("Helvetica-Bold", 12)
-        pdf.drawCentredString(width / 2, height - 50, "Sri Vidya Learning Center, Bangalore")
+        pdf.drawCentredString(width / 2, height - 50, "Sri Vidya Learning Center, Kanchipuram")
 
         # Footer section
         pdf.setFont("Helvetica", 9)
         
- # Left-aligned: Center Name
-    #pdf.drawString(50, 40, "Sri Vidya Learning Center, Bangalore (of Soundarya Lahari Trust)")
-    
     # Center-aligned: Website & Facebook
         pdf.drawString(50, 40, "www.srimeru.org")
         pdf.drawString(50, 60, "www.facebook.com/Soundarya.Lahari")
