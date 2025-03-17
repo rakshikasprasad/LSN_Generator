@@ -12,30 +12,33 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
 
     <style>
-        /* Dark background without unwanted lines */
+        /* Background Styling */
         body {
-            background: radial-gradient(circle at center, #0f172a, #1e293b);
+            background: url('/static/keynotes-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
             font-family: 'Poppins', sans-serif;
             color: #fff;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
         }
-        
-        /* Centered container */
+
+        /* Container Styling */
         .container {
+            position: absolute;
+            left: 10%;
             max-width: 500px;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.1);
+            background: black;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         /* Title */
         h2 {
             font-size: 24px;
@@ -43,35 +46,29 @@
             color: #0ea5e9;
             margin-bottom: 10px;
         }
-        
+
         /* Label styling */
         label {
             font-weight: bold;
             color: #ddd;
         }
-        
-        /* Fix for dropdown background and text */
-.select2-dropdown {
-    background-color: #1e293b !important;  /* Dark background */
-    color: #fff !important;  /* White text */
-    border: 1px solid #0ea5e9;
-}
 
-/* Ensure selected option is visible */
-.select2-results__option {
-    color: #fff !important;
-    padding: 10px;
-}
+        /* Mantra Display Box */
+        #mantra-display {
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: none;
+        }
 
-/* Highlight selected item */
-.select2-results__option--highlighted {
-    background-color: #2563eb !important;  /* Blue highlight */
-    color: #fff !important;
-}
-
-        
         /* Button */
         .btn-primary {
+            margin-top: 15px;
             width: 100%;
             font-size: 18px;
             background: #2563eb;
@@ -81,39 +78,63 @@
             transition: 0.3s;
             color: #fff;
         }
-        
-        /* Button hover effect */
+
+        /* Button Hover */
         .btn-primary:hover {
             background: #1d4ed8;
             transform: scale(1.05);
         }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 600px) {
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
             .container {
+                left: 5%;
                 width: 90%;
-                padding: 20px;
             }
         }
-        
-        
+
+        /* Fix text color in select2 dropdown */
+.select2-container .select2-selection--single {
+    background-color: white !important;  /* Ensure dropdown has a white background */
+    color: black !important;  /* Ensure text is black */
+    border: 1px solid #ccc;  /* Add border for clarity */
+}
+
+/* Ensure the dropdown items are visible */
+.select2-container .select2-results__option {
+    color: black !important;  /* Ensure dropdown text is visible */
+    background-color: white !important;  /* Ensure dropdown background is white */
+}
+
+/* Fix for selected option */
+.select2-container .select2-selection__rendered {
+    color: black !important;  /* Make sure selected text is visible */
+}
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 class="mb-3"> Samputeekarana PDF Generator </h2>
-    <p class="text-light">Select an area of life and download your customized PDF.</p>
+    <h2 class="mb-3">Sri Vidya Learning Center</h2>
+    <h2 class="mb-3">Lalitha Sahasranama</h2>
+    <h2 class="mb-3">Samputeekarana PDF Generator</h2>
+    <p class="text-light">Select an area of life and see the mantra.</p>
 
     <form method="post">
         <div class="mb-3">
             <label for="aspect">Choose an Aspect of Life:</label>
             <select id="aspect" name="aspect" class="form-control">
+                <option value="">Select an Aspect</option>
                 {% for aspect in aspects %}
                     <option value="{{ aspect }}">{{ aspect }}</option>
                 {% endfor %}
             </select>
         </div>
+
+        <!-- Display Mantra Here -->
+        <div id="mantra-display"></div>
+
         <button type="submit" class="btn btn-primary">📜 Generate & Download PDF</button>
     </form>
 </div>
@@ -129,19 +150,32 @@
             placeholder: "🔍 Search & Select...",
             allowClear: true
         });
-    });
+    
+        // Fetch Mantra When Aspect is Selected
+        $('#aspect').on('change', function() {
+            var selectedAspect = $(this).val();
+            
+            if (selectedAspect) {
+                $.ajax({
+                    url: '/get-mantra',
+                    type: 'POST',
+                    contentType: 'application/json',  // Ensures proper request format
+                    data: JSON.stringify({ aspect: selectedAspect }),  // Send as JSON
+                    dataType: 'json',  // Expect JSON response
+                    success: function(response) {
+                        $('#mantra-display').text(response.mantra).show();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error:", error);
+                        $('#mantra-display').text("Error fetching mantra").show();
+                    }
+                });
+            } else {
+                $('#mantra-display').hide();
+            }
+        });
+    });    
 </script>
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RYNFTK9FCW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RYNFTK9FCW');
-</script>
-
 
 </body>
 </html>
