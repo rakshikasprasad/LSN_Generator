@@ -2,8 +2,12 @@ from flask import Flask, render_template, request, send_file, jsonify
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+from reportlab.lib.pagesizes import A4
 import io
 import re
+
+
+
 app = Flask(__name__)
 
 # Register Unicode-compatible font (Ensure 'NotoSans-Regular.ttf' is in the directory)
@@ -93,17 +97,44 @@ def get_mantra():
 
 def generate_pdf(selected_aspect, samputeekarana):
     """
-    Generate a PDF named after the selected aspect.
+    Generate a PDF with a centered header and footer.
     """
-    # Create a safe filename from the selected aspect
     safe_filename = "Samputeekarana_LSN_" + re.sub(r"[^a-zA-Z0-9\s]", "", selected_aspect).replace(" ", "_") + ".pdf"
-
     buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+
+    
+    def add_header_footer():
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.drawCentredString(width / 2, height - 30, "Sree Matre Namaha")
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawCentredString(width / 2, height - 50, "Sri Vidya Learning Center, Bangalore")
+
+        # Footer section
+        pdf.setFont("Helvetica", 9)
+        
+ # Left-aligned: Center Name
+    #pdf.drawString(50, 40, "Sri Vidya Learning Center, Bangalore (of Soundarya Lahari Trust)")
+    
+    # Center-aligned: Website & Facebook
+        pdf.drawString(50, 40, "www.srimeru.org")
+        pdf.drawString(50, 60, "www.facebook.com/Soundarya.Lahari")
+        
+        # Right-aligned: Contact Info
+        pdf.drawRightString(width - 50, 40, "8088256632, 8867709990")
+        pdf.drawRightString(width - 50, 60, "srimeru999@gmail.com")
+
     pdf.setFont("NotoSans", 12)
-    y = 800  # Initial positioning in the PDF
+    y = height - 80  # Start below the header
 
     for line in sahasranama_lines:
+        if y < 50:
+            add_header_footer()
+            pdf.showPage()
+            pdf.setFont("NotoSans", 12)
+            y = height - 80
+
         pdf.drawString(100, y, samputeekarana)
         y -= 20
         pdf.drawString(100, y, line.strip())
@@ -111,15 +142,12 @@ def generate_pdf(selected_aspect, samputeekarana):
         pdf.drawString(100, y, samputeekarana)
         y -= 40
 
-        if y < 50:
-            pdf.showPage()
-            pdf.setFont("NotoSans", 12)
-            y = 800
-
+    add_header_footer()  # Ensure footer is added before saving
     pdf.save()
     buffer.seek(0)
 
     return buffer, safe_filename
+
 
 if __name__ == "__main__":
     app.run(debug=True)
