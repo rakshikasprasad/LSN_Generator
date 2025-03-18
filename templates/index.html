@@ -68,7 +68,7 @@
 
         /* Button */
         .btn-primary {
-            margin-top: 15px;
+             margin-top: 15px;
             width: 100%;
             font-size: 18px;
             background: #2563eb;
@@ -111,6 +111,32 @@
     color: black !important;  /* Make sure selected text is visible */
 }
 
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    body {
+        background: url('/static/mobile-bg.jpg') no-repeat center center;
+        background-size: cover; /* Adjust background to cover on small screens */
+    }
+    
+    .container {
+        left: 5%;
+        width: 90%;
+        margin-top: 150px; /* Pushes the container down */
+    }
+
+    h2 {
+        font-size: 18px; /* Reduce heading size for mobile */
+    }
+
+    #mantra-display {
+        font-size: 14px; /* Adjust mantra display size */
+    }
+
+    .btn-primary {
+        font-size: 16px; /* Reduce button font size */
+        padding: 10px;
+    }
+}
     </style>
 </head>
 <body>
