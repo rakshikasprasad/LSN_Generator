@@ -2,4 +2,4 @@ flask
 serverless-wsgi
 gunicorn
 reportlab
-pandas==1.5.3
+pandas
