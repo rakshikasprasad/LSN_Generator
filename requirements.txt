@@ -3,3 +3,4 @@ serverless-wsgi
 gunicorn
 reportlab
 pandas
+openpyxl
