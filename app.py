@@ -71,7 +71,7 @@ def generate_pdf(selected_line_number, samputeekarana):
         pdf.setFont("Helvetica-Bold", 14)
         pdf.drawCentredString(width / 2, height - 30, "Sree Matre Namaha")
         pdf.setFont("Helvetica-Bold", 12)
-        pdf.drawCentredString(width / 2, height - 50, "Sri Vidya Learning Center, Bangalore")
+        pdf.drawCentredString(width / 2, height - 50, "Sri Vidya Learning Center, Kanchipuram")
         pdf.setFont("Helvetica", 9)
         pdf.drawString(50, 40, "www.srimeru.org")
         pdf.drawString(50, 60, "www.facebook.com/Soundarya.Lahari")
